@@ -1,7 +1,7 @@
 import {MainViewModel} from "./models/MainViewModel.mjs";
 
 const splashScreen = document.querySelector('.splash-screen');
-const  splashScreenBtn = document.querySelector('.splash-screen-btn');
+const  groupSelector = document.querySelectorAll('.guesses-group');
 const wordDisplay = document.querySelector(".word-display");
 const guessesText = document.querySelector(".guesses-text b");
 const keyboardDiv = document.querySelector(".keyboard");
@@ -13,8 +13,10 @@ const playAgainBtn = gameModal.querySelector("button");
 const mainViewModel = new MainViewModel();
 
 
-splashScreenBtn.addEventListener('click', ()=>{
-    splashScreen.style.display = 'none';
+groupSelector.forEach( card =>{
+    card.addEventListener('click', ()=>{
+        splashScreen.style.display = 'none';
+    });
 });
 const resetGame = () => {
     // Ressetting game variables and UI elements

@@ -29,12 +29,48 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 10%;
+    padding-top: 8%;
     gap: 20%;
 }
 
 .splash-screen h1{
     font-size: 5em;
+}
+
+.splash-screen .guesses-groups{
+    position: absolute;
+    left: 0;
+    top: 40vh;
+    width: 20vw;
+}
+
+.splash-screen .guesses-group{
+    display: flex;
+    align-items: center;
+    width: 10vw;
+    justify-content: space-around;
+    margin-top: 5%;
+    cursor: pointer;
+    background-color: #8286c9;
+    border-radius: 0 10px 10px 0;
+    transition: 120ms;
+}
+
+.splash-screen .guesses-group i{
+    display: none;
+}
+
+.splash-screen .guesses-group:hover{
+    width: 20vw;
+}
+
+.splash-screen .guesses-group:hover :where(i){
+    display: block;
+}
+
+.splash-screen .guesses-group img{
+    height:10vh;
+    width:10vw;
 }
 
 .splash-screen button{
