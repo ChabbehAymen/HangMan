@@ -7,40 +7,40 @@ export class MainViewModel {
     #maxGuesses = 6; // max tries
     #wordHint; // the hint that related to word
     #category;
+    #timeCounter;
 
 
     //  resets
     reset(){
         this.#wrongGuessCount = 0;
         this.#correctLetters = [];
-        // this.getWords();
-        if (isNaN(this.currentWord) && cu)
-        this.#currentWord = 'qw';
-        this.#wordHint = 'test';
+        this.#timeCounter = 40;
+        this.getWords();
     }
 
     getWords(){
         // Selecting a random word and hint from the wordList
-        let word = '';
-        let hint = '';
-        let randomWordAndHint = ()=>{
-            if (this.#category === 'football'){
-                const {mWrod, mHint} = wordList[0].words[Math.floor(Math.random() * wordList.length)];
-                word = mWrod;
-                hint = mHint;
-            }else {
-                const {mWrod, mHint} =  wordList[1].words[Math.floor(Math.random() * wordList.length)];
-                word = mWrod;
-                hint = mHint;
+        if (this.#category === 'football'){
+            const {word, hint} = this.getData(0);
+            console.log(word);
+            if (this.currentWord === word ){
+                this.getWords();
             }
-        }
-
-        if(isNaN(this.#currentWord) && word !== this.currentWord){
-            randomWordAndHint()
-        }
-        else {
             this.#currentWord = word;
+            this.#wordHint = hint;
+        }else {
+            const {word, hint} =  this.getData(1);
+            console.log(word);
+            if (this.currentWord === word ){
+                this.getWords();
+            }
+            this.#currentWord = word;
+            this.#wordHint = hint;
         }
+    }
+
+    getData(index){
+        return wordList[index].words[Math.floor(Math.random() * wordList[index].words.length)];
     }
 
 
@@ -53,7 +53,6 @@ export class MainViewModel {
     }
 
     get currentWord(){
-        console.log(this.#currentWord);
         return this.#currentWord;
     }
     get wordHint(){
@@ -66,6 +65,13 @@ export class MainViewModel {
 
     get wrongGuessCount(){
         return this.#wrongGuessCount;
+    }
+
+    get timeCounter(){
+        return this.#timeCounter;
+    }
+    decreaseTimeCounter(){
+        this.#timeCounter--;
     }
 
     setCategory(category){

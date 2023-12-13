@@ -10,9 +10,9 @@ const hangmanImage = document.querySelector(".hangmanImage");
 const gameModal = document.querySelector(".game-modal");
 const playAgainBtn = gameModal.querySelector("button");
 const timer = document.querySelector(".timer");
-let isDuplicated = false;
-let seconds = 60;
-let timerInterval;
+const exitBtn = document.querySelector('.container i');
+let removedIndices = [];
+let seconds ;
 
 
 const mainViewModel = new MainViewModel();
@@ -20,12 +20,13 @@ const mainViewModel = new MainViewModel();
 
 groupSelector.forEach( card =>{
     card.addEventListener('click', () =>{
+        exitBtn.style.display = 'block';
         if (card.classList.contains('football-container')){
             mainViewModel.setCategory('football');
-            hangmanImage.style.backgroundImage = 'url("./imgs/playerImg.png")';
+            hangmanImage.style.backgroundImage = 'url("./imgs/ronaldo.jpeg")';
         }else {
             mainViewModel.setCategory('bodyBuild');
-            hangmanImage.style.backgroundImage = 'url("./imgs/playerImg.png")';
+            hangmanImage.style.backgroundImage = 'url("./imgs/sam-sulek.png")';
         }
         getRandomWord();
         // playAgainBtn.addEventListener("click", () => location.reload());
@@ -35,23 +36,19 @@ groupSelector.forEach( card =>{
 });
 const resetGame = () => {
     // Ressetting game variables and UI elements
-    if (hangmanImage.innerHTML !== ''){
-        hangmanImage.innerHTML = '';
-        mainViewModel.reset();
-        createHidingDiv();
-        guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
-        wordDisplay.innerHTML = mainViewModel.currentWord.split("").map(() => `<li class="letter"></li>`).join("");
-        keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
-        gameModal.classList.remove("show");
-        seconds = 60;
-    }
+    mainViewModel.reset();
+    createHidingDiv();
+    guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
+    wordDisplay.innerHTML = mainViewModel.currentWord.split("").map(() => `<li class="letter"></li>`).join("");
+    keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
+    gameModal.classList.remove("show");
+    // seconds = 40;
+    timer.style.animation = '';
+    removedIndices = [];
 }
 
 const getRandomWord = () => {
     resetGame();
-    // gridItems.forEach( item =>{
-    //     item.style.opacity = '1';
-    // })
     // display hint of the word
     document.querySelector(".hint-text b").innerText = mainViewModel.wordHint;
 }
@@ -98,29 +95,36 @@ const initGame = (button, clickedLetter) => {
 
     // Calling gameOver function if any of these condition meets
     if(mainViewModel.wrongGuessCount === mainViewModel.maxGuesses) return gameOver(false);
-    if(mainViewModel.correctLettersLength === mainViewModel.currentWord.length) return gameOver(true);
+    if(mainViewModel.correctLettersLength === mainViewModel.currentWord.length) {
+        hangmanImage.innerHTML = '';
+        return gameOver(true);
+    }
 
 }
 
-let removedIndices = [];
+
 function hideRandomDiv() {
     const gridItems = document.querySelectorAll('.cover'); // divs that hides the image in the container
-    const availableIndices = Array.from(gridItems).map((item, index) => index).filter(index => !removedIndices.includes(index));
+    console.log(Array.from(gridItems).filter((i , index)=> !removedIndices.includes(index)));
+    const availableIndices = Array.from(gridItems).map((item,index) => index).filter(index => !removedIndices.includes(index));
+    console.log(availableIndices);
     if (availableIndices.length > 0) {
         const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         const divToHide = gridItems[randomIndex];
+        console.log(divToHide, 'load');
         divToHide.style.opacity = '0';
         removedIndices.push(randomIndex);
     }
 }
 
 function startTimer() {
-    timerInterval = setInterval(function () {
-        seconds--;
-        timer.textContent = "Timer: " + seconds + "s";
-        timer.style.position = 'absolute'
-        timer.style.top = '30px'
-        if (seconds === 0) {
+    setInterval(function () {
+        mainViewModel.decreaseTimeCounter();
+        timer.textContent = "Timer: " + mainViewModel.timeCounter + "s";
+        if (mainViewModel.timeCounter < 20){
+            timer.style.animation = 'time-out-animation 1s ease-in-out infinite';
+        }
+        if (mainViewModel.timeCounter === 0) {
             let audio = new Audio('over.mp3');
             audio.play()
             clearInterval()
@@ -130,7 +134,7 @@ function startTimer() {
 }
 
 function createHidingDiv() {
-    let currentWordLength = mainViewModel.currentWord.toString().length;
+    let currentWordLength = [...mainViewModel.currentWord].length;
     hangmanImage.innerHTML ='';
     let createDivs = ()=>{
         hangmanImage.innerHTML+='<div class="cover"></div>';
@@ -139,13 +143,12 @@ function createHidingDiv() {
     if ( currentWordLength % 2 === 0 ){
         for (let i = 0; i < currentWordLength; i++) {
             createDivs();
-            isDuplicated = false;
         }
     }else {
         currentWordLength++;
         for (let i = 0; i < currentWordLength; i++) {
             createDivs();
-            isDuplicated = true;
+            timer.style.animation = '';
         }
     }
 }
@@ -160,7 +163,7 @@ function playAudio(src){
 function animateContainer(animation) {
     container.classList.add(animation);
     setTimeout(()=>{
-        container.classList.remove('container-animation');
+    container.classList.remove(animation);
     }, 120);
 }
 // Creating keyboard buttons and adding event listeners
@@ -173,3 +176,4 @@ for (let i = 97; i <= 122; i++) {
 }
 
 playAgainBtn.addEventListener("click", getRandomWord);
+exitBtn.addEventListener('click', e => {location.reload()});

@@ -99,6 +99,30 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+.container i{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 2%;
+    color: white;
+    cursor:pointer;
+    z-index: 0;
+}
+
+.timer{
+    position: absolute;
+    color: white;
+    top: 0;
+    left: 45%;
+}
+
+@keyframes time-out-animation {
+    0%{transform: scale(1); color: white}
+    50%{transform: scale(1.5); color: red}
+    100%{transform: scale(1); color: white}
+}
+
 .container-error-animation{
     animation: error-animation 120ms ease-in-out;
 }
@@ -137,9 +161,8 @@ body {
     grid-template-columns: repeat(2, 1fr);
     width: 200px;
     height:400px;
-    background-image: url("./imgs/playerImg.png");
     background-size:cover;
-    background-position: -100px 0;
+    background-position: center;
 }
 .cover{
     width: 100px;
