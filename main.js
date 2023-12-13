@@ -4,11 +4,13 @@ const splashScreen = document.querySelector('.splash-screen');
 const  groupSelector = document.querySelectorAll('.guesses-group');
 const wordDisplay = document.querySelector(".word-display");
 const guessesText = document.querySelector(".guesses-text b");
+const container = document.querySelector('.container');
 const keyboardDiv = document.querySelector(".keyboard");
 const hangmanImage = document.querySelector(".hangmanImage");
 const gameModal = document.querySelector(".game-modal");
 const playAgainBtn = gameModal.querySelector("button");
 const timer = document.querySelector(".timer");
+let isDuplicated = false;
 let seconds = 60;
 let timerInterval;
 
@@ -26,38 +28,51 @@ groupSelector.forEach( card =>{
             hangmanImage.style.backgroundImage = 'url("./imgs/playerImg.png")';
         }
         getRandomWord();
-        playAgainBtn.addEventListener("click", () => location.reload());
+        // playAgainBtn.addEventListener("click", () => location.reload());
         splashScreen.style.display = 'none';
         startTimer();
     });
 });
 const resetGame = () => {
     // Ressetting game variables and UI elements
-    mainViewModel.reset();
-    guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
-    wordDisplay.innerHTML = mainViewModel.currentWord.split("").map(() => `<li class="letter"></li>`).join("");
-    keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
-    gameModal.classList.remove("show");
-    seconds = 60;
+    if (hangmanImage.innerHTML !== ''){
+        hangmanImage.innerHTML = '';
+        mainViewModel.reset();
+        createHidingDiv();
+        guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
+        wordDisplay.innerHTML = mainViewModel.currentWord.split("").map(() => `<li class="letter"></li>`).join("");
+        keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
+        gameModal.classList.remove("show");
+        seconds = 60;
+    }
 }
 
 const getRandomWord = () => {
     resetGame();
+    // gridItems.forEach( item =>{
+    //     item.style.opacity = '1';
+    // })
     // display hint of the word
     document.querySelector(".hint-text b").innerText = mainViewModel.wordHint;
 }
 
 const gameOver = (isVictory) => {
-    console.log('game over');
     // After game complete.. showing modal with relevant details
     const modalText = isVictory ? `You found the word:` : 'The correct word was:';
-    // gameModal.querySelector("img").src = `images/${isVictory ? 'victory' : 'lost'}.gif`;
     gameModal.querySelector("h4").innerText = isVictory ? 'Congrats!' : 'Game Over!';
     gameModal.querySelector("p").innerHTML = `${modalText} <b>${mainViewModel.currentWord}</b>`;
     gameModal.classList.add("show");
+    if (isVictory){
+        playAudio('./audio/win.wav');
+        animateContainer('container-win-animation');
+    }else{
+        playAudio('./audio/lose.wav');
+    }
 }
 
 const initGame = (button, clickedLetter) => {
+
+
     // Checking if clickedLetter is exist on the currentWord
     if(mainViewModel.currentWord.includes(clickedLetter)) {
         // Showing all correct letters on the word display
@@ -67,11 +82,16 @@ const initGame = (button, clickedLetter) => {
                 wordDisplay.querySelectorAll("li")[index].innerText = letter;
                 wordDisplay.querySelectorAll("li")[index].classList.add("guessed");
                 hideRandomDiv();
+
             }
         });
+
+        playAudio('./audio/corect.wav');
     } else {
         // If clicked letter doesn't exist then update the wrongGuessCount and hangman image
         mainViewModel.wrongGuess();
+        playAudio('./audio/wrong_sound_effect.mp3');
+        animateContainer('container-error-animation');
     }
     button.disabled = true; // Disabling the clicked button so user can't click again
     guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
@@ -84,23 +104,14 @@ const initGame = (button, clickedLetter) => {
 
 let removedIndices = [];
 function hideRandomDiv() {
-    const gridItems = document.querySelectorAll('.cover');
+    const gridItems = document.querySelectorAll('.cover'); // divs that hides the image in the container
     const availableIndices = Array.from(gridItems).map((item, index) => index).filter(index => !removedIndices.includes(index));
     if (availableIndices.length > 0) {
         const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         const divToHide = gridItems[randomIndex];
         divToHide.style.opacity = '0';
         removedIndices.push(randomIndex);
-        console.log(removedIndices);
     }
-}
-
-// Creating keyboard buttons and adding event listeners
-for (let i = 97; i <= 122; i++) {
-    const button = document.createElement("button");
-    button.innerText = String.fromCharCode(i);
-    keyboardDiv.appendChild(button);
-    button.addEventListener("click", (e) => initGame(e.target, String.fromCharCode(i)));
 }
 
 function startTimer() {
@@ -118,3 +129,47 @@ function startTimer() {
     }, 1000);
 }
 
+function createHidingDiv() {
+    let currentWordLength = mainViewModel.currentWord.toString().length;
+    hangmanImage.innerHTML ='';
+    let createDivs = ()=>{
+        hangmanImage.innerHTML+='<div class="cover"></div>';
+
+    }
+    if ( currentWordLength % 2 === 0 ){
+        for (let i = 0; i < currentWordLength; i++) {
+            createDivs();
+            isDuplicated = false;
+        }
+    }else {
+        currentWordLength++;
+        for (let i = 0; i < currentWordLength; i++) {
+            createDivs();
+            isDuplicated = true;
+        }
+    }
+}
+
+// plays audios in the error and in the win
+function playAudio(src){
+    let audio = new Audio(src);
+    audio.play();
+}
+
+// animate the div container that hold the keyboard
+function animateContainer(animation) {
+    container.classList.add(animation);
+    setTimeout(()=>{
+        container.classList.remove('container-animation');
+    }, 120);
+}
+// Creating keyboard buttons and adding event listeners
+
+for (let i = 97; i <= 122; i++) {
+    const button = document.createElement("button");
+    button.innerText = String.fromCharCode(i);
+    keyboardDiv.appendChild(button);
+    button.addEventListener("click", (e) => initGame(e.target, String.fromCharCode(i)));
+}
+
+playAgainBtn.addEventListener("click", getRandomWord);

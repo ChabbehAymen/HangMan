@@ -98,6 +98,29 @@ body {
     justify-content: space-between;
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
+
+.container-error-animation{
+    animation: error-animation 120ms ease-in-out;
+}
+
+.container-win-animation{
+    animation: win-animation 120ms ease-in-out;
+}
+
+@keyframes win-animation {
+    0%{transform: translateY(-5%)}
+    40%{transform: translateY(5%)}
+    80%{transform: translateY(-5%)}
+    100%{transform: translateY(0)}
+}
+
+@keyframes error-animation {
+    0%{transform: translateX(-5%)}
+    40%{transform: translateX(5%)}
+    80%{transform: translateX(-5%)}
+    100%{transform: translateX(0)}
+}
+
 .hangman-box img {
     user-select: none;
     max-width: 270px;
@@ -120,7 +143,7 @@ body {
 }
 .cover{
     width: 100px;
-    height: 100px;
+    height: 100%;
     background-color: #5E63BA;
     border: 1px solid black;
 }

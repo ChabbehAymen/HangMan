@@ -13,19 +13,33 @@ export class MainViewModel {
     reset(){
         this.#wrongGuessCount = 0;
         this.#correctLetters = [];
-        this.getWords();
+        // this.getWords();
+        if (isNaN(this.currentWord) && cu)
+        this.#currentWord = 'qw';
+        this.#wordHint = 'test';
     }
 
     getWords(){
         // Selecting a random word and hint from the wordList
-        if (this.#category === 'football'){
-            const {word, hint} = wordList[0].words[Math.floor(Math.random() * wordList.length)];
+        let word = '';
+        let hint = '';
+        let randomWordAndHint = ()=>{
+            if (this.#category === 'football'){
+                const {mWrod, mHint} = wordList[0].words[Math.floor(Math.random() * wordList.length)];
+                word = mWrod;
+                hint = mHint;
+            }else {
+                const {mWrod, mHint} =  wordList[1].words[Math.floor(Math.random() * wordList.length)];
+                word = mWrod;
+                hint = mHint;
+            }
+        }
+
+        if(isNaN(this.#currentWord) && word !== this.currentWord){
+            randomWordAndHint()
+        }
+        else {
             this.#currentWord = word;
-            this.#wordHint = hint;
-        }else {
-            const {word, hint} = wordList[1].words[Math.floor(Math.random() * wordList.length)];
-            this.#currentWord = word;
-            this.#wordHint = hint;
         }
     }
 
