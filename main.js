@@ -35,7 +35,7 @@ groupSelector.forEach( card =>{
     });
 });
 const resetGame = () => {
-    // Ressetting game variables and UI elements
+    // Resetting game variables and UI elements
     mainViewModel.reset();
     createHidingDiv();
     guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
@@ -54,7 +54,7 @@ const getRandomWord = () => {
 }
 
 const gameOver = (isVictory) => {
-    // After game complete.. showing modal with relevant details
+    // After game complete showing modal with relevant details
     const modalText = isVictory ? `You found the word:` : 'The correct word was:';
     gameModal.querySelector("h4").innerText = isVictory ? 'Congrats!' : 'Game Over!';
     gameModal.querySelector("p").innerHTML = `${modalText} <b>${mainViewModel.currentWord}</b>`;
@@ -70,7 +70,7 @@ const gameOver = (isVictory) => {
 const initGame = (button, clickedLetter) => {
 
 
-    // Checking if clickedLetter is exist on the currentWord
+    // Checking if clickedLetter is existed on the currentWord
     if(mainViewModel.currentWord.includes(clickedLetter)) {
         // Showing all correct letters on the word display
         [...mainViewModel.currentWord].forEach((letter, index) => {
@@ -83,7 +83,7 @@ const initGame = (button, clickedLetter) => {
             }
         });
 
-        playAudio('./audio/corect.wav');
+        playAudio('./audio/correct.wav');
     } else {
         // If clicked letter doesn't exist then update the wrongGuessCount and hangman image
         mainViewModel.wrongGuess();
