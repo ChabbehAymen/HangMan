@@ -6,20 +6,29 @@ export class MainViewModel {
     #wrongGuessCount; // how many times the user field
     #maxGuesses = 6; // max tries
     #wordHint; // the hint that related to word
+    #category;
+
 
     //  resets
     reset(){
         this.#wrongGuessCount = 0;
-        this.getWords();
         this.#correctLetters = [];
+        this.getWords();
     }
 
     getWords(){
         // Selecting a random word and hint from the wordList
-        const {word, hint} = wordList[Math.floor(Math.random() * wordList.length)];
-        this.#currentWord = word;
-        this.#wordHint = hint;
+        if (this.#category === 'football'){
+            const {word, hint} = wordList[0].words[Math.floor(Math.random() * wordList.length)];
+            this.#currentWord = word;
+            this.#wordHint = hint;
+        }else {
+            const {word, hint} = wordList[1].words[Math.floor(Math.random() * wordList.length)];
+            this.#currentWord = word;
+            this.#wordHint = hint;
+        }
     }
+
 
     addCorrectLetters(letter){
         this.#correctLetters.push(letter);
@@ -30,6 +39,7 @@ export class MainViewModel {
     }
 
     get currentWord(){
+        console.log(this.#currentWord);
         return this.#currentWord;
     }
     get wordHint(){
@@ -42,6 +52,10 @@ export class MainViewModel {
 
     get wrongGuessCount(){
         return this.#wrongGuessCount;
+    }
+
+    setCategory(category){
+        this.#category = category;
     }
     wrongGuess(){
         this.#wrongGuessCount++;

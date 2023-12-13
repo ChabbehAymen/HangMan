@@ -20,8 +20,8 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
-    background-image: url("https://cdn.dribbble.com/users/2977519/screenshots/10781292/media/c99d5899843c628d8851d57e85816f5a.jpg?resize=400x300&vertical=center");
+    height: 100%;
+    background-image: url("./imgs/backd.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -35,6 +35,11 @@ body {
 
 .splash-screen h1{
     font-size: 5em;
+}
+
+.splash-screen .introduction{
+    font-size: 1.5em;
+    padding: 0 15vw;
 }
 
 .splash-screen .guesses-groups{
@@ -80,8 +85,6 @@ body {
     color: white;
     border: 1px solid white;
     cursor: pointer;
-    /*width: 10%;*/
-    /*height: 5vh;*/
 }
 
 .container {
@@ -105,6 +108,53 @@ body {
     margin-top: 20px;
     text-transform: uppercase;
 }
+
+.hangmanImage{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 200px;
+    height:400px;
+    background-image: url("./imgs/playerImg.png");
+    background-size:cover;
+    background-position: -100px 0;
+}
+.cover{
+    width: 100px;
+    height: 100px;
+    background-color: #5E63BA;
+    border: 1px solid black;
+}
+.start{
+    color: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+    background: #5E63BA;
+    padding: 15px;
+    position: absolute;
+    left: 47%;
+    margin-top: 20px;
+}
+.category{
+    color: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+    background: #5E63BA;
+    padding: 15px;
+    position: relative;
+    margin-top: 20px;
+    margin: 10px;
+}
+
 .game-box .word-display {
     gap: 10px;
     list-style: none;
