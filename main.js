@@ -12,7 +12,7 @@ const playAgainBtn = gameModal.querySelector("button");
 const timer = document.querySelector(".timer");
 const exitBtn = document.querySelector('.container i');
 let removedIndices = [];
-let seconds ;
+let isGameOVer = false ;
 
 
 const mainViewModel = new MainViewModel();
@@ -36,7 +36,7 @@ groupSelector.forEach( card =>{
 });
 const resetGame = () => {
     // Resetting game variables and UI elements
-    mainViewModel.reset();
+    mainViewModel.resetData();
     createHidingDiv();
     guessesText.innerText = `${mainViewModel.wrongGuessCount} / ${mainViewModel.maxGuesses}`;
     wordDisplay.innerHTML = mainViewModel.currentWord.split("").map(() => `<li class="letter"></li>`).join("");
@@ -55,6 +55,7 @@ const getRandomWord = () => {
 
 const gameOver = (isVictory) => {
     // After game complete showing modal with relevant details
+    isGameOVer = true;
     const modalText = isVictory ? `You found the word:` : 'The correct word was:';
     gameModal.querySelector("h4").innerText = isVictory ? 'Congrats!' : 'Game Over!';
     gameModal.querySelector("p").innerHTML = `${modalText} <b>${mainViewModel.currentWord}</b>`;
@@ -105,19 +106,20 @@ const initGame = (button, clickedLetter) => {
 
 function hideRandomDiv() {
     const gridItems = document.querySelectorAll('.cover'); // divs that hides the image in the container
-    console.log(Array.from(gridItems).filter((i , index)=> !removedIndices.includes(index)));
     const availableIndices = Array.from(gridItems).map((item,index) => index).filter(index => !removedIndices.includes(index));
     console.log(availableIndices);
     if (availableIndices.length > 0) {
         const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         const divToHide = gridItems[randomIndex];
-        console.log(divToHide, 'load');
         divToHide.style.opacity = '0';
         removedIndices.push(randomIndex);
     }
 }
 
 function startTimer() {
+    console.log(isGameOVer)
+    if (!isGameOVer){
+        console.log(isGameOVer)
     setInterval(function () {
         mainViewModel.decreaseTimeCounter();
         timer.textContent = "Timer: " + mainViewModel.timeCounter + "s";
@@ -125,12 +127,11 @@ function startTimer() {
             timer.style.animation = 'time-out-animation 1s ease-in-out infinite';
         }
         if (mainViewModel.timeCounter === 0) {
-            let audio = new Audio('over.mp3');
-            audio.play()
             clearInterval()
             gameOver(false);
         }
     }, 1000);
+    }
 }
 
 function createHidingDiv() {

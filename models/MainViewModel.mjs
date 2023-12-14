@@ -10,11 +10,11 @@ export class MainViewModel {
     #timeCounter;
 
 
-    //  resets
-    reset(){
+    //  resets data of the app
+    resetData(){
         this.#wrongGuessCount = 0;
         this.#correctLetters = [];
-        this.#timeCounter = 40;
+        this.#timeCounter = 60;
         this.getWords();
     }
 
@@ -30,7 +30,6 @@ export class MainViewModel {
             this.#wordHint = hint;
         }else {
             const {word, hint} =  this.getData(1);
-            console.log(word);
             if (this.currentWord === word ){
                 this.getWords();
             }

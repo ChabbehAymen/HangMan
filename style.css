@@ -108,6 +108,7 @@ body {
     color: white;
     cursor:pointer;
     z-index: 0;
+    font-size: 2em;
 }
 
 .timer{
@@ -115,6 +116,7 @@ body {
     color: white;
     top: 0;
     left: 45%;
+    margin-top: 1%;
 }
 
 @keyframes time-out-animation {
